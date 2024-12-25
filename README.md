@@ -1,6 +1,29 @@
 # Spotify Advanced SQL Project and Query Optimization
 ![Netflix Logo](https://github.com/pbisht2105/spotify_sql_project/blob/main/dataset-cover.jpg)
 
+## Table of Contents
+1. [Overview](#overview)
+2. [Dataset](#dataset)
+3. [Project Steps](#project-steps)
+    1. [Data Exploration](#data-exploration)
+    2. [Querying the Data](#querying-the-data)
+        - [Easy Queries](#easy-queries)
+        - [Medium Queries](#medium-queries)
+        - [Advanced Queries](#advanced-queries)
+    3. [Query Optimization](#query-optimization)
+4. [15 Practice Questions](#15-practice-questions)
+    1. [Easy Level](#easy-level)
+    2. [Medium Level](#medium-level)
+    3. [Advanced Level](#advanced-level)
+5. [Solutions 15 Practice Questions](#solutions-15-practice-questions)
+6. [Query Optimization Technique](#query-optimization-technique)
+    1. [Initial Query Performance Analysis Using EXPLAIN](#initial-query-performance-analysis-using-explain)
+    2. [Index Creation on the artist Column](#index-creation-on-the-artist-column)
+    3. [Performance Analysis After Index Creation](#performance-analysis-after-index-creation)
+    4. [Graphical Performance Comparison](#graphical-performance-comparison)
+7. [Author](#author)
+
+
 ## Overview
 This project involves analyzing a Spotify dataset with various attributes about tracks, albums, and artists using **SQL**. It covers an end-to-end process of normalizing a denormalized dataset, performing SQL queries of varying complexity (easy, medium, and advanced), and optimizing query performance. The primary goals of the project are to practice advanced SQL skills and generate valuable insights from the dataset.
 
