@@ -60,7 +60,7 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 
 ## Solutions 15 Practice Questions
 The data for this project is sourced from the Kaggle dataset:
-- **SQL Solution File Link:** [Spotify Dataset](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify%20solutions.sql)
+- **Solution:** [Spotify Solution File](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify%20solutions.sql)
 
 
 Here’s an updated section for your **Spotify Advanced SQL Project and Query Optimization** README, focusing on the query optimization task you performed. You can include the specific screenshots and graphs as described.
