@@ -11,10 +11,6 @@
 4. [15 Practice Questions](#15-practice-questions)
 5. [Solutions 15 Practice Questions](#solutions-15-practice-questions)
 6. [Query Optimization Technique](#query-optimization-technique)
-    1. [Initial Query Performance Analysis Using EXPLAIN](#initial-query-performance-analysis-using-explain)
-    2. [Index Creation on the artist Column](#index-creation-on-the-artist-column)
-    3. [Performance Analysis After Index Creation](#performance-analysis-after-index-creation)
-    4. [Graphical Performance Comparison](#graphical-performance-comparison)
 7. [Author](#author)
 
 
@@ -97,7 +93,9 @@ To improve query performance, we carried out the following optimization process:
 - **Index Creation on the `artist` Column**
     - To optimize the query performance, we created an index on the `artist` column. This ensures faster retrieval of rows where the artist is queried.
     - **SQL command** for creating the index:
-      ```sqlCREATE INDEX idx_artist ON spotify(artist);```
+      ```sql
+      CREATE INDEX idx_artist ON spotify(artist);
+      ```
 
 - **Performance Analysis After Index Creation**
     - After creating the index, we ran the same query again and observed significant improvements in performance:
