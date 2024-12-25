@@ -12,10 +12,10 @@ The data for this project is sourced from the Kaggle dataset:
 
 ### 1. Data Exploration
 Before diving into SQL, it’s important to understand the dataset thoroughly. The dataset contains attributes such as:
-- `Artist`: The performer of the track.
-- `Track`: The name of the song.
-- `Album`: The album to which the track belongs.
-- `Album_type`: The type of album (e.g., single or album).
+- `artist`: The performer of the track.
+- `track`: The name of the song.
+- `album`: The album to which the track belongs.
+- `album_type`: The type of album (e.g., single or album).
 - Various metrics such as `danceability`, `energy`, `loudness`, `tempo`, and more.
 
 ### 4. Querying the Data
