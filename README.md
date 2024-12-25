@@ -98,7 +98,6 @@ To improve query performance, we carried out the following optimization process:
     - To optimize the query performance, we created an index on the `artist` column. This ensures faster retrieval of rows where the artist is queried.
     - **SQL command** for creating the index:
       ```sql
-      -- CREATE INDEX for optimized query performance
 	CREATE INDEX idx_artist ON spotify(artist);
       ```
 
@@ -112,8 +111,6 @@ To improve query performance, we carried out the following optimization process:
 - **Graphical Performance Comparison**
     - A graph illustrating the comparison between the initial query execution time and the optimized query execution time after index creation.
     - **Graph view** shows the significant drop in both execution time:
-     ### BEFORE ![Performance Analysis](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_analysisbefore_index.png)
-     ### AFTER ![Performance Analysis](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_analysisafter_index.png)
      ### BEFORE ![Performance Graph](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_graphbefore_index.png)
      ### AFTER ![Performance Graph](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_graphafter_index.png)
 
