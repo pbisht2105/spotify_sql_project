@@ -1,345 +1,114 @@
-# Netflix Movies and TV Shows Data Analysis Using SQL
-![Netflix Logo](https://github.com/pbisht2105/netflix_sql_project/blob/main/logo.png)
+# Spotify Advanced SQL Project and Query Optimization
+![Netflix Logo](https://github.com/pbisht2105/spotify_sql_project/blob/main/dataset-cover.jpg)
 
 ## Overview
-This project involves a comprehensive analysis of Netflix's movies and TV shows data using SQL. The goal is to extract valuable insights and answer various business questions based on the dataset. The following README provides a detailed account of the project's objectives, business problems, solutions, findings, and conclusions.
-
-## Objectives
-
-- Analyze the distribution of content types (movies vs TV shows).
-- Identify the most common ratings for movies and TV shows.
-- List and analyze content based on release years, countries, and durations.
-- Explore and categorize content based on specific criteria and keywords.
+This project involves analyzing a Spotify dataset with various attributes about tracks, albums, and artists using **SQL**. It covers an end-to-end process of normalizing a denormalized dataset, performing SQL queries of varying complexity (easy, medium, and advanced), and optimizing query performance. The primary goals of the project are to practice advanced SQL skills and generate valuable insights from the dataset.
 
 ## Dataset
-
 The data for this project is sourced from the Kaggle dataset:
+- **Dataset Link:** [Spotify Dataset](https://www.kaggle.com/datasets/sanjanchaudhari/spotify-dataset)
 
-- **Dataset Link:** [Movies Dataset](https://www.kaggle.com/datasets/shivamb/netflix-shows?resource=download)
+## Project Steps
 
-## Data Preprocessing and Cleaning
+### 1. Data Exploration
+Before diving into SQL, it’s important to understand the dataset thoroughly. The dataset contains attributes such as:
+- `Artist`: The performer of the track.
+- `Track`: The name of the song.
+- `Album`: The album to which the track belongs.
+- `Album_type`: The type of album (e.g., single or album).
+- Various metrics such as `danceability`, `energy`, `loudness`, `tempo`, and more.
 
-Before importing the data from the CSV file into the SQL database, a data cleaning process was performed to ensure the dataset was in good shape for analysis. After reviewing the data, the following cleaning steps were applied:
+### 4. Querying the Data
+After the data is inserted, various SQL queries can be written to explore and analyze the data. Queries are categorized into **easy**, **medium**, and **advanced** levels to help progressively develop SQL proficiency.
 
-- **Duplicates**: Check for any duplicate rows or entries within data.
-- **Handled Missing Values**: Missing or null values were either removed or filled with default values where necessary.
-- **Corrected Data Formats**: The format of columns was standardized, ensuring consistent data types (e.g. numerical values in release_year).
-- **Addressed Inconsistent Entries**: Inconsistent or incorrectly formatted data (such as extra spaces, special characters, or misspellings) were corrected.
-- **Ensured Data Integrity**: Validity checks were performed to ensure that all the data makes sense and aligns with the intended structure of the database.
+#### Easy Queries
+- Simple data retrieval, filtering, and basic aggregations.
+  
+#### Medium Queries
+- More complex queries involving grouping, aggregation functions, and joins.
+  
+#### Advanced Queries
+- Nested subqueries, window functions, CTEs, and performance optimization.
 
-These steps helped clean the data and make it suitable for a smooth and accurate import into the SQL database.
+### 5. Query Optimization
+In advanced stages, the focus shifts to improving query performance. Some optimization strategies include:
+- **Indexing**: Adding indexes on frequently queried columns.
+- **Query Execution Plan**: Using `EXPLAIN ANALYZE` to review and refine query performance.
 
-## Schema
+## 15 Practice Questions
 
+### Easy Level
+1. Retrieve the names of all tracks that have more than 1 billion streams.
+2. List all albums along with their respective artists.
+3. Get the total number of comments for tracks where `licensed = TRUE`.
+4. Find all tracks that belong to the album type `single`.
+5. Count the total number of tracks by each artist.
+
+### Medium Level
+1. Calculate the average danceability of tracks in each album.
+2. Find the top 5 tracks with the highest energy values.
+3. List all tracks along with their views and likes where `official_video = TRUE`.
+4. For each album, calculate the total views of all associated tracks.
+5. Retrieve the track names that have been streamed on Spotify more than YouTube.
+
+### Advanced Level
+1. Find the top 3 most-viewed tracks for each artist using window functions.
+2. Write a query to find tracks where the liveness score is above the average.
+3. **Calculate the difference between the highest and lowest energy values for tracks in each album.**
 ```sql
-DROP table if exists Netflix;
-
-CREATE TABLE Netflix (
-    show_id VARCHAR(7),
-    show_type VARCHAR(10),
-    title VARCHAR(150),
-    director VARCHAR(210),
-    casts VARCHAR(1000),
-    country VARCHAR(150),
-    date_added VARCHAR(50),
-    release_year INT,
-    rating VARCHAR(10),
-    duration VARCHAR(15),
-    listed_in VARCHAR(150),
-    descriptions VARCHAR(250)
+WITH tempor AS (
+    SELECT album, MAX(energy) AS highenergy, MIN(energy) AS lowenergy 
+    FROM spotify
+    GROUP BY album
+) 
+SELECT album, highenergy - lowenergy AS diff
+FROM tempor
+ORDER BY 2 DESC;
 ```
+   
+5. Find tracks where the energy-to-liveness ratio is greater than 1.2.
+6. Calculate the cumulative sum of likes for tracks ordered by the number of views, using window functions.
 
-## Business Problems and Solutions
+Here’s an updated section for your **Spotify Advanced SQL Project and Query Optimization** README, focusing on the query optimization task you performed. You can include the specific screenshots and graphs as described.
 
-### 1. Count the Number of Movies vs TV Shows
+---
 
-```sql
-SELECT 
-	show_type,
-	count(*) "Number of Movies vs TV Shows" 
-FROM netflix
-GROUP BY show_type;
-```
+## Query Optimization Technique 
 
-**Objective:** Determine the distribution of content types on Netflix.
+To improve query performance, we carried out the following optimization process:
 
-### 2. Find the Most Common Rating for Movies and TV Shows
+- **Initial Query Performance Analysis Using `EXPLAIN`**
+    - We began by analyzing the performance of a query using the `EXPLAIN` function.
+    - The query retrieved tracks based on the `artist` column, and the performance metrics were as follows:
+        - Execution time (E.T.): **13.193 ms**
+        - Planning time (P.T.): **0.177 ms**
+    - Below is the **screenshot** of the `EXPLAIN` result before optimization:
+      ![EXPLAIN Before Index](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explainbefore_index.png)
 
-```sql
-SELECT 
-    show_type,
-    rating,
-    rating_count,
-    ranking
-FROM (
-    SELECT
-        show_type,
-        rating, 
-        COUNT(*) AS "rating_count",
-        RANK() OVER(PARTITION BY show_type ORDER BY COUNT(*) DESC) AS ranking
-    FROM netflix
-    GROUP BY show_type, rating
-) AS temp_table
-WHERE 
-    ranking = 1;
-```
+- **Index Creation on the `artist` Column**
+    - To optimize the query performance, we created an index on the `artist` column. This ensures faster retrieval of rows where the artist is queried.
+    - **SQL command** for creating the index:
+      ```sql
+      -- CREATE INDEX for optimized query performance
+	CREATE INDEX idx_artist ON spotify(artist);
+      ```
 
-**Objective:** Identify the most frequently occurring rating for each type of content.
+- **Performance Analysis After Index Creation**
+    - After creating the index, we ran the same query again and observed significant improvements in performance:
+        - Execution time (E.T.): **0.139 ms**
+        - Planning time (P.T.): **0.210 ms**
+    - Below is the **screenshot** of the `EXPLAIN` result after index creation:
+      ![EXPLAIN After Index](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explainafter_index.png)
 
-### 3. List All Movies Released in a Specific Year (e.g., 2020)
+- **Graphical Performance Comparison**
+    - A graph illustrating the comparison between the initial query execution time and the optimized query execution time after index creation.
+    - **Graph view** shows the significant drop in both execution time:
+     ### BEFORE ![Performance Analysis](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_analysisbefore_index.png)
+     ### AFTER ![Performance Analysis](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_analysisafter_index.png)
+     ### BEFORE ![Performance Graph](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_graphbefore_index.png)
+     ### AFTER ![Performance Graph](https://github.com/pbisht2105/spotify_sql_project/blob/main/spotify_explain_graphafter_index.png)
 
-```sql
-SELECT 
-    *
-FROM 
-    netflix
-WHERE
-    show_type = 'Movie' 
-    AND release_year = 2020;
-```
-
-**Objective:** Retrieve all movies released in a specific year.
-
-### 4. Find the Top 5 Countries with the Most Content on Netflix
-
-```sql
-SELECT 
-    UNNEST(STRING_TO_ARRAY(country, ',')) AS new_country, 
-    COUNT(show_id) AS "total_content"
-FROM netflix
-GROUP BY new_country
-ORDER BY "total_content" DESC
-LIMIT 5;
-```
-```sql
--- IF YOUR COLUMNS DON'T HAVE MULTIPLE COUNTRY IN ONE CELL
-
-SELECT 
-    country, 
-    COUNT(show_id) AS "Netflix_content_count"
-FROM
-    netflix
-GROUP BY country
-ORDER BY "Netflix_content_count" DESC
-LIMIT 5;
-```
-
-**Objective:** Identify the top 5 countries with the highest number of content items.
-
-### 5. Identify the Longest Movie
-
-```sql
-SELECT *
-FROM netflix
-ORDER BY CAST(LEFT(duration, POSITION(' ' IN duration) - 1) AS INTEGER) DESC
-LIMIT 1;
-
--- OR --
-
-SELECT *, CAST(LEFT(duration, POSITION(' ' IN duration) - 1) AS INTEGER) AS int_duration 
-FROM netflix
-WHERE 
-    show_type = 'Movie'
-ORDER BY int_duration DESC
-LIMIT 1;
-```
-```sql
--- IF YOUR VALUES ARE OF INTEGER TYPE
-SELECT *
-FROM netflix
-WHERE
-    show_type = 'Movie' AND duration = (SELECT MAX(duration) FROM netflix);
-```
-
-**Objective:** Find the movie with the longest duration.
-
-### 6. Find Content Added in the Last 5 Years
-
-```sql
-SELECT *
-FROM netflix
-WHERE CAST(date_added AS DATE) >= CURRENT_DATE - INTERVAL '5 years';
-
--- OR --
-
-SELECT *
-FROM netflix
-WHERE TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '5 years';
-```
-
-**Objective:** Retrieve content added to Netflix in the last 5 years.
-
-### 7. Find All Movies/TV Shows by Director 'Rajiv Chilaka'
-
-```sql
-SELECT *
-FROM netflix
-WHERE director ILIKE '%Rajiv Chilaka%';
-```
-
-**Objective:** List all content directed by 'Rajiv Chilaka'.
-
-### 8. List All TV Shows with More Than 5 Seasons
-
-```sql
-SELECT *
-FROM netflix
-WHERE
-    show_type = 'TV Show' 
-    AND CAST(LEFT(duration, POSITION(' ' IN duration) - 1) AS INTEGER) > 5
-ORDER BY CAST(LEFT(duration, POSITION(' ' IN duration) - 1) AS INTEGER) DESC;
-
--- OR --
-
-SELECT *
-FROM netflix
-WHERE
-    show_type = 'TV Show' 
-    AND SPLIT_PART(duration, ' ', 1)::NUMERIC > 5
-ORDER BY duration DESC;
-```
-
-**Objective:** Identify TV shows with more than 5 seasons.
-
-### 9. Count the Number of Content Items in Each Genre
-
-```sql
-SELECT 
-    UNNEST(STRING_TO_ARRAY(listed_in, ',')) AS genre, 
-    COUNT(show_type) AS "Content_Pieces"
-FROM netflix
-GROUP BY UNNEST(STRING_TO_ARRAY(listed_in, ','))
-ORDER BY COUNT(show_type) DESC;
-```
-
-**Objective:** Count the number of content items in each genre.
-
-### 10.Find each year and the average numbers of content release in India on netflix. 
-return top 5 year with highest avg content release!
-
-```sql
-SELECT 
-    EXTRACT(YEAR FROM TO_DATE(date_added, 'Month DD, YYYY')) AS year,
-    COUNT(*), 
-    ROUND(COUNT(*)::numeric / (SELECT COUNT(*) FROM netflix WHERE country ILIKE '%India%') * 100, 0) AS avg_release_per_year
-FROM netflix
-WHERE country ILIKE '%India%'
-GROUP BY year;
-
--- OR --
-
-WITH date_format_table AS
-	(
-	SELECT CAST(date_added AS DATE) "DATE",*
-	FROM netflix
-	)
-Select EXTRACT(YEAR FROM "DATE") AS "Year", COUNT(*), ROUND(COUNT(*)::numeric/(SELECT count(*) FROM netflix WHERE country ILIKE '%India%')*100 ,0) as avg_release_per_year
-FROM date_format_table
-WHERE country ILIKE '%India%'
-GROUP BY 1;
-
-```
-
-**Objective:** Calculate and rank years by the average number of content releases by India.
-
-### 11. List All Movies that are Documentaries
-
-```sql
-SELECT *
-FROM netflix 
-WHERE 
-    show_type = 'Movie' 
-    AND listed_in ILIKE '%documentaries%';
-```
-
-**Objective:** Retrieve all movies classified as documentaries.
-
-### 12. Find All Content Without a Director
-
-```sql
-SELECT *
-FROM netflix 
-WHERE 
-    director IS NULL;
-```
-
-**Objective:** List content that does not have a director.
-
-### 13. Find How Many Movies Actor 'Salman Khan' Appeared in the Last 10 Years
-
-```sql
-SELECT *
-FROM netflix 
-WHERE 
-    casts ILIKE '%Salman Khan%' 
-    AND release_year >= EXTRACT(YEAR FROM CURRENT_DATE) - 10;
-```
-
-**Objective:** Count the number of movies featuring 'Salman Khan' in the last 10 years.
-
-### 14. Find the Top 10 Actors Who Have Appeared in the Highest Number of Movies Produced in India
-
-```sql
-SELECT 
-    UNNEST(STRING_TO_ARRAY(casts, ',')) AS "indian_actor", 
-    COUNT(*) AS "total_movies"
-FROM netflix
-WHERE 
-    country ILIKE '%India%' 
-    AND show_type = 'Movie'
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 10;
-```
-
-**Objective:** Identify the top 10 actors with the most appearances in Indian-produced movies.
-
-### 15. Categorize Content Based on the Presence of 'Kill' and 'Violence' Keywords
-
-```sql
-WITH new_table AS (
-	SELECT 
-		CASE
-    		WHEN descriptions ILIKE '% kill%' OR descriptions ILIKE '% violen%' THEN 'Bad Content'
-    		ELSE 'Good Content'
-		END as "Content_Categorization",
-		title,
-		show_id,
-		descriptions
-	FROM netflix
-	ORDER BY "Content_Categorization" ASC
-)
-SELECT "Content_Categorization", count(*) as "Count"
-FROM new_table
-GROUP BY "Content_Categorization";
-
--- OR --
-
-SELECT 
-    category,
-    COUNT(*) AS content_count
-FROM (
-    SELECT 
-        CASE 
-            WHEN descriptions ILIKE '% kill%' OR descriptions ILIKE '% violen%' THEN 'Bad Content'
-            ELSE 'Good Content'
-        END AS category
-    FROM netflix
-) AS categorized_content
-GROUP BY category;
-```
-
-**Objective:** Categorize content as 'Bad' if it contains 'kill' or 'violence' and 'Good' otherwise. Count the number of items in each category.
-
-## Findings and Conclusion
-
-- **Content Distribution:** The dataset includes a wide variety of movies and TV shows with different ratings and genres.
-- **Common Ratings:** Analyzing the most frequent ratings helps us understand the intended audience for the content.
-- **Geographical Insights:** The top countries and the average number of content releases from India provide a clearer picture of regional content distribution.
-- **Content Categorization:** Organizing the content using specific keywords gives us a better understanding of the types of content available on Netflix.
-
-
-This analysis provides a comprehensive view of Netflix's content and can help inform content strategy and decision-making.
+This optimization shows how indexing can drastically reduce query time, improving the overall performance of our database operations in the Spotify project.
 
 ## Author
 
