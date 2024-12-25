@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS spotify;
 
 CREATE TABLE spotify (
@@ -28,7 +29,7 @@ CREATE TABLE spotify (
 );
 
 -- EDA --
-
+EXPLAIN ANALYSE
 SELECT * FROM public.spotify;
 
 SELECT COUNT(*) FROM spotify;
@@ -164,8 +165,29 @@ ORDER BY views;
 ---------------------
 
 -- 16. Calculate the cumulative sum of likes for tracks ordered by the number of views.
-SELECT track, views, likes, 
-       SUM(likes) OVER (ORDER BY views) AS cumulative_likes
+
+
+SELECT track, views, likes, SUM(likes) OVER (ORDER BY views) AS cumulative_likes
 FROM spotify
-WHERE likes <> 0
+WHERE likes > 0
 ORDER BY views;
+
+---------------------------------
+-- Query Optimization
+---------------------------------
+
+EXPLAIN ANALYZE   -- "Execution Time: 13.193 ms before indexing"
+SELECT artist, track
+FROM spotify
+WHERE  artist = '50 Cent' AND most_played_on = 'Youtube'
+ORDER BY stream DESC  LIMIT 25;
+	
+
+-- CREATE INDEX for optimized query performance
+CREATE INDEX idx_artist ON spotify(artist);
+EXPLAIN ANALYZE
+SELECT artist, track
+FROM spotify
+WHERE artist = '50 Cent' AND most_played_on = 'Youtube'
+ORDER BY stream DESC
+LIMIT 25;
